@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/cppalloc
+cppalloc.so
+cppalloc.dylib
+cppalloc.dll
+cppalloc.a
+cppalloc.lib
+cppalloc-test-*
+*.exe
+*.o
+*.obj
+*.lst

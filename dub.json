@@ -1,0 +1,12 @@
+{
+	"name": "cppnew",
+	"description": "Wrapper for CPP new and delete for use with std.experimental.allocator",
+	"copyright": "Copyright © 2019, Ernesto Castellotti",
+	"license": "MPL-2.0",
+	"authors": [
+		"Ernesto Castellotti"
+	],
+	"libs": [
+		"stdc++"
+	]
+}
