@@ -1,6 +1,56 @@
 module cppnew;
 
-struct CPPNew {
+auto CPPNew(T, A...) (auto ref A args) {
+    import std.experimental.allocator : make;
+    return CPPAllocator.instance.make!T(args);
+}
+
+T[] CPPNewArray(T) (size_t length) {
+    import std.experimental.allocator : makeArray;
+    return CPPAllocator.instance.makeArray!T(length);
+}
+
+T[] CPPNewArray(T) (size_t length, T init) {
+    import std.experimental.allocator : makeArray;
+    return CPPAllocator.instance.makeArray!T(length, init);
+}
+
+Unqual!(ElementEncodingType!R)[] CPPNewArray(R)(R range) if (isInputRange!R && !isInfinite!R) {
+    import std.experimental.allocator : makeArray;
+    return CPPAllocator.instance.makeArray!T(range);
+}
+
+T[] CPPNewArray(T, R)(R range) if (isInputRange!R && !isInfinite!R) {
+    import std.experimental.allocator : makeArray;
+    return CPPAllocator.instance.makeArray!T(range);
+}
+
+auto CPPNewMultidimensionalArray(T, size_t N)(size_t[N] lengths...) {
+    import std.experimental.allocator : makeMultidimensionalArray;
+    return CPPAllocator.instance.makeMultidimensionalArray!T(lengths);
+}
+
+void CPPDelete(T) (auto ref T* p) {
+    import std.experimental.allocator : dispose;
+    CPPAllocator.instance.dispose(p);
+}
+
+void CPPDelete(T) (auto ref T p) if (is(T == class) || is(T == interface)) {
+    import std.experimental.allocator : dispose;
+    CPPAllocator.instance.dispose(p);
+}
+
+void CPPDelete(T) (auto ref T[] array) {
+    import std.experimental.allocator : dispose;
+    CPPAllocator.instance.dispose(array);
+}
+
+void CPPDeleteMultidimensionalArray(T)(auto ref T[] array) {
+    import std.experimental.allocator : disposeMultidimensionalArray;
+    CPPAllocator.instance.disposeMultidimensionalArray(array);
+}
+
+struct CPPAllocator {
     import std.experimental.allocator.common : platformAlignment;
     import core.stdcpp.xutility : __cpp_aligned_new;
 
@@ -8,7 +58,7 @@ struct CPPNew {
      * Returns the global instance of this allocator type.
      * CppNew is thread-safe, all methods are shared.
      */
-    static shared CPPNew instance;
+    static shared CPPAllocator instance;
 
     /**
      * The alignment is a static constant equal to `platformAlignment`, which
