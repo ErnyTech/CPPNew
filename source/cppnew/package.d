@@ -37,7 +37,13 @@ void CPPDelete(T) (auto ref T* p) {
 
 void CPPDelete(T) (auto ref T p) if (is(T == class) || is(T == interface)) {
     import std.experimental.allocator : dispose;
-    CPPAllocator.instance.dispose(p);
+    
+    if (!p) {
+        return;
+    }
+    
+    destroy(p);
+    CPPAllocator.instance.dispose(cast(void*) p); //Workaround for prevent error "Runtime type information is not supported for extern(C++) classes"
 }
 
 void CPPDelete(T) (auto ref T[] array) {
